@@ -95,6 +95,20 @@ module.exports = {
       scale: {
         '-1': '-1',
       },
+      keyframes: {
+        wiggle: {
+          '0%': { transform: 'translateX(-5px)' },
+          '20%': { transform: 'translateX(5px)' },
+          '40%': { transform: 'translateX(-5px)' },
+          '60%': { transform: 'translateX(5px)' },
+          '80%': { transform: 'translateX(-5px)' },
+          '90%': { transform: 'translateX(5px)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        wiggle: 'wiggle .3s ease-in-out 3',
+      },
     },
   },
   variants: {
