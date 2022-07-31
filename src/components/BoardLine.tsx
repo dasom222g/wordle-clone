@@ -7,7 +7,7 @@ interface BoardLineProp {
 
 const BoardLine: FC<BoardLineProp> = ({ wordList }) => {
   return (
-    <div className="grid grid-cols-5 gap-2 animate-wiggle">
+    <div className="grid grid-cols-5 gap-2">
       {wordList.map((word) => (
         <div key={word.id} className={`border-2 border-gray-400 ${word.data && 'border-gray-900'}`}>
           <div className="w-full h-0 pb-full relative">

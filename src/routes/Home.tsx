@@ -28,7 +28,7 @@ const Home: FC = () => {
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
       console.error('error')
-      // TODO : animation wiggle 처리
+      // TODO : animate-wiggle 처리
       return
     }
     console.log('solution', solution)
