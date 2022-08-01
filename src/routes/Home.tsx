@@ -5,7 +5,6 @@ import { EvaluationIndicatorType, FocusIndicatorType, WordDataListType } from '.
 import {
   boardListState,
   currentRowState,
-  evaluationListState,
   inputState,
   isFocusState,
   solutionState,
@@ -28,7 +27,6 @@ const Home: FC = () => {
   const solution = useRecoilValue(solutionState)
 
   const [boardList, setBoardList] = useRecoilState(boardListState)
-  const [evaluationList, setEvaluationList] = useRecoilState(evaluationListState)
 
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
@@ -45,12 +43,11 @@ const Home: FC = () => {
   }
 
   const handleSubmit = (): void => {
-    checkCorrect()
+    checkBoard()
   }
 
-  const checkCorrect = (): void => {
+  const checkBoard = (): void => {
     const submitWord = wordDataList[currentRow].word
-    const submitWordList = Array.from(submitWord)
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
@@ -59,27 +56,46 @@ const Home: FC = () => {
       return
     }
     // 정답 체크
-    const correctCheckList: EvaluationIndicatorType[] = submitWordList.map((word, index) =>
-      word === solution[index] ? 'correct' : null,
-    )
-    const resultEvaluationList: EvaluationIndicatorType[] = correctCheckList.map((check, index) => {
-      return !check
-        ? Array.from(solution).some((word) => word === submitWord[index])
-          ? 'present'
-          : 'absent'
-        : check
+    const resultWordDataList = wordDataList.map((wordData, index) => {
+      const isCurrentRow = index === currentRow
+      const { wordList } = wordData
+      return {
+        ...wordData,
+        wordList: isCurrentRow
+          ? wordList.map((word, index) => ({ ...word, evaluation: checkCorrect(word.data, index) }))
+          : wordData.wordList,
+      }
     })
+    console.log('resultWordDataList', resultWordDataList)
+    setWordDataList(resultWordDataList)
     setBoardList((prev) => prev.map((item, index) => (index === currentRow ? submitWord : item)))
-    setEvaluationList((prev) =>
-      prev.map((item, index) => (index === currentRow ? resultEvaluationList : item)),
+    setInput('')
+  }
+
+  const checkCorrect = (targetWord: string, targetIndex: number): EvaluationIndicatorType => {
+    // 존재여부 체크
+    const solutionWordList = Array.from(solution)
+    const result: EvaluationIndicatorType =
+      solutionWordList[targetIndex] === targetWord
+        ? 'correct'
+        : checkExist(solutionWordList, targetWord)
+    console.log('targetWord', result)
+    return result
+  }
+
+  const checkExist = (solutionWordList: string[], targetWord: string): EvaluationIndicatorType => {
+    const result: EvaluationIndicatorType = solutionWordList.some(
+      (solutionWord) => solutionWord === targetWord,
     )
+      ? 'present'
+      : 'absent'
+    return result
   }
 
   useEffect(() => {
     console.log('boardList', boardList)
-    console.log('wordDataList', wordDataList)
-    console.log('evaluationList', evaluationList)
-  }, [boardList, wordDataList, evaluationList])
+    // console.log('wordDataList', wordDataList)
+  }, [boardList])
 
   useEffect(() => {
     const currentIndex = boardList.findIndex((board) => board === '')
