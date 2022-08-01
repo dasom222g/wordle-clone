@@ -69,7 +69,6 @@ const Home: FC = () => {
     console.log('resultWordDataList', resultWordDataList)
     setWordDataList(resultWordDataList)
     setBoardList((prev) => prev.map((item, index) => (index === currentRow ? submitWord : item)))
-    setInput('')
   }
 
   const checkCorrect = (targetWord: string, targetIndex: number): EvaluationIndicatorType => {
@@ -93,14 +92,14 @@ const Home: FC = () => {
   }
 
   useEffect(() => {
-    console.log('boardList', boardList)
-    // console.log('wordDataList', wordDataList)
-  }, [boardList])
-
-  useEffect(() => {
     const currentIndex = boardList.findIndex((board) => board === '')
     setCurrentRow(currentIndex)
   }, [boardList, setCurrentRow])
+
+  useEffect(() => {
+    setInput('')
+    keyboardRef.current?.setInput('')
+  }, [currentRow, setInput])
 
   return (
     <div
