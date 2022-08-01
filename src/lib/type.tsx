@@ -8,7 +8,7 @@ export type FocusIndicatorType = typeof focusIndicator[keyof typeof focusIndicat
 const evaluationIndicator = {
   absent: 'absent', // gray
   present: 'present', // yellow
-  current: 'current', // green
+  correct: 'correct', // green
 } as const
 
 export type EvaluationIndicatorType =

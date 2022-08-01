@@ -64,7 +64,7 @@ export const initialWordDataList: WordDataListType[] = [
 
 export const initialBoardList = ['', '', '', '', '', '']
 
-export const emptyList: EvaluationIndicatorType[] = [null, null, null, null, null, null]
+export const emptyList: EvaluationIndicatorType[] = [null, null, null, null, null]
 
 export const initialEvaluationList = [
   emptyList,

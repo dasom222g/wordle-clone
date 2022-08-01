@@ -26,7 +26,7 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({ keyboardRef, handleSubmit })
         wordList: isCurrentItem
           ? wordData.wordList.map((word, index) => ({ ...word, data: value[index] || '' }))
           : wordData.wordList,
-        word: isCurrentItem ? wordData.wordList.map((word) => word.data).join('') : wordData.word,
+        word: isCurrentItem ? value : wordData.word,
         isCurrentItem,
       }
     })
