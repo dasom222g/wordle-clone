@@ -1,25 +1,30 @@
-import { EvaluationIndicatorType, WordDataListType, WordListType } from '../lib/type'
+import { WordDataListType, WordListType } from '../lib/type'
 
 export const initialWordList: WordListType[] = [
   {
     id: 1,
     data: '',
+    evaluation: null,
   },
   {
     id: 2,
     data: '',
+    evaluation: null,
   },
   {
     id: 3,
     data: '',
+    evaluation: null,
   },
   {
     id: 4,
     data: '',
+    evaluation: null,
   },
   {
     id: 5,
     data: '',
+    evaluation: null,
   },
 ]
 
@@ -63,16 +68,5 @@ export const initialWordDataList: WordDataListType[] = [
 ]
 
 export const initialBoardList = ['', '', '', '', '', '']
-
-export const emptyList: EvaluationIndicatorType[] = [null, null, null, null, null]
-
-export const initialEvaluationList = [
-  emptyList,
-  emptyList,
-  emptyList,
-  emptyList,
-  emptyList,
-  emptyList,
-]
 
 export const initialSolution = 'UPSET'

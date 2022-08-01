@@ -17,6 +17,7 @@ export type EvaluationIndicatorType =
 export interface WordListType {
   id: number
   data: string
+  evaluation: EvaluationIndicatorType
 }
 
 export interface WordDataListType {
