@@ -1,26 +1,23 @@
 import React, { FC, MutableRefObject, useEffect, useRef } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { wordDataListState, inputState, boardListState } from '../state/dataState'
 import BoardLine from '../components/BoardLine'
+import { WordDataListType } from '../lib/type'
 
 interface Board {
+  input: string
+  currentIndex: number
+  wordDataList: WordDataListType[]
   isFocus: boolean
   keyboardRef: MutableRefObject<KeyboardReactInterface | null>
+  handleInputChange: (value: string, resultWordDataList: WordDataListType[]) => void
 }
 
-const Board: FC<Board> = ({ isFocus, keyboardRef }) => {
+const Board: FC<Board> = ({ input, currentIndex, wordDataList, isFocus, handleInputChange }) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  const boardList = useRecoilValue(boardListState)
-  const [wordDataList, setWordDataList] = useRecoilState(wordDataListState)
-  const [input, setInput] = useRecoilState(inputState)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let { value } = e.target
     value = value.toUpperCase()
-    const isCurrentIndex = wordDataList.findIndex((wordData) => wordData.isCurrentItem)
-    const currentIndex =
-      isCurrentIndex !== -1 ? isCurrentIndex : boardList.findIndex((board) => board === '')
     const resultWordDataList = wordDataList.map((wordData, index) => {
       const isCurrentItem = Number(currentIndex) === index
       const { word } = wordData
@@ -33,9 +30,7 @@ const Board: FC<Board> = ({ isFocus, keyboardRef }) => {
         isCurrentItem,
       }
     })
-    keyboardRef.current?.setInput(value)
-    setInput(value)
-    setWordDataList(resultWordDataList)
+    handleInputChange(value, resultWordDataList)
   }
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { EvaluationIndicatorType, FocusIndicatorType, WordDataListType } from '../lib/type'
 import {
   boardListState,
@@ -19,7 +19,7 @@ const Home: FC = () => {
   const keyboardRef = useRef<KeyboardReactInterface | null>(null)
   const [isFocus, setIsFocus] = useRecoilState(isFocusState)
 
-  const setInput = useSetRecoilState(inputState)
+  const [input, setInput] = useRecoilState(inputState)
 
   const [wordDataList, setWordDataList] = useRecoilState(wordDataListState)
 
@@ -33,21 +33,22 @@ const Home: FC = () => {
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
   }
-  const handelKeyChange = (
-    value: string,
-    currentRow: number,
-    resultWordDataList: WordDataListType[],
-  ): void => {
+  const handelKeyChange = (value: string, resultWordDataList: WordDataListType[]): void => {
     setInput(value)
-    setCurrentRow(currentRow)
+    setWordDataList(resultWordDataList)
+  }
+
+  const handelInputChange = (value: string, resultWordDataList: WordDataListType[]): void => {
+    keyboardRef.current?.setInput(value)
+    setInput(value)
     setWordDataList(resultWordDataList)
   }
 
   const handleSubmit = (): void => {
-    checkCorrect(currentRow)
+    checkCorrect()
   }
 
-  const checkCorrect = (currentRow: number): void => {
+  const checkCorrect = (): void => {
     const submitWord = wordDataList[currentRow].word
     const submitWordList = Array.from(submitWord)
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
@@ -80,16 +81,28 @@ const Home: FC = () => {
     console.log('evaluationList', evaluationList)
   }, [boardList, wordDataList, evaluationList])
 
+  useEffect(() => {
+    const currentIndex = boardList.findIndex((board) => board === '')
+    setCurrentRow(currentIndex)
+  }, [boardList, setCurrentRow])
+
   return (
     <div
       onFocus={() => handleFocus('focus')}
       onBlur={() => handleFocus('blur')}
       className="max-w-125 mx-auto h-full flex flex-col p-4">
-      <Borad isFocus={isFocus} keyboardRef={keyboardRef} />
+      <Borad
+        input={input}
+        currentIndex={currentRow}
+        wordDataList={wordDataList}
+        isFocus={isFocus}
+        keyboardRef={keyboardRef}
+        handleInputChange={handelInputChange}
+      />
       <KeyboardWrapper
         keyboardRef={keyboardRef}
+        currentIndex={currentRow}
         wordDataList={wordDataList}
-        boardList={boardList}
         handleKeyChange={handelKeyChange}
         handleSubmit={handleSubmit}
       />

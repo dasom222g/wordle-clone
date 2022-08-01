@@ -5,25 +5,20 @@ import { WordDataListType } from '../lib/type'
 
 interface KeyboardWrapperProp {
   keyboardRef: MutableRefObject<KeyboardReactInterface | null>
+  currentIndex: number
   wordDataList: WordDataListType[]
-  boardList: string[]
-  handleKeyChange: (
-    value: string,
-    currentRow: number,
-    resultWordDataList: WordDataListType[],
-  ) => void
+  handleKeyChange: (value: string, resultWordDataList: WordDataListType[]) => void
   handleSubmit: () => void
 }
 
 const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
   keyboardRef,
+  currentIndex,
   wordDataList,
-  boardList,
   handleKeyChange,
   handleSubmit,
 }) => {
   const handleChange = (value: string): void => {
-    const currentIndex = boardList.findIndex((board) => board === '')
     const resultWordDataList: WordDataListType[] = wordDataList.map((wordData, index) => {
       const isCurrentItem = Number(currentIndex) === index
       return {
@@ -35,7 +30,7 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
         isCurrentItem,
       }
     })
-    handleKeyChange(value, currentIndex, resultWordDataList)
+    handleKeyChange(value, resultWordDataList)
   }
 
   const handleKeyPress = (value: string): void => {
