@@ -13,9 +13,9 @@ module.exports = {
     },
     extend: {
       colors: {
-        'wordle-green': '#6aaa64',
-        'wordle-yellow': '#c9b458',
-        'wordle-gray': '#787c7e',
+        'wordle-absent': '#787c7e',
+        'wordle-present': '#c9b458',
+        'wordle-correct': '#6aaa64',
       },
       minWidth: {
         0: '0',
