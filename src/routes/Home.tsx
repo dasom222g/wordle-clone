@@ -1,10 +1,12 @@
 import React, { FC, useEffect, useRef } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { EvaluationIndicatorType, FocusIndicatorType } from '../lib/type'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { EvaluationIndicatorType, FocusIndicatorType, WordDataListType } from '../lib/type'
 import {
   boardListState,
+  currentRowState,
   evaluationListState,
+  inputState,
   isFocusState,
   solutionState,
   wordDataListState,
@@ -16,7 +18,12 @@ import { solutionList } from '../lib/utils'
 const Home: FC = () => {
   const keyboardRef = useRef<KeyboardReactInterface | null>(null)
   const [isFocus, setIsFocus] = useRecoilState(isFocusState)
-  const wordDataList = useRecoilValue(wordDataListState)
+
+  const setInput = useSetRecoilState(inputState)
+
+  const [wordDataList, setWordDataList] = useRecoilState(wordDataListState)
+
+  const [currentRow, setCurrentRow] = useRecoilState(currentRowState)
 
   const solution = useRecoilValue(solutionState)
 
@@ -26,8 +33,17 @@ const Home: FC = () => {
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
   }
+  const handelKeyChange = (
+    value: string,
+    currentRow: number,
+    resultWordDataList: WordDataListType[],
+  ): void => {
+    setInput(value)
+    setCurrentRow(currentRow)
+    setWordDataList(resultWordDataList)
+  }
 
-  const handleSubmit = (currentRow: number): void => {
+  const handleSubmit = (): void => {
     checkCorrect(currentRow)
   }
 
@@ -53,7 +69,9 @@ const Home: FC = () => {
         : check
     })
     setBoardList((prev) => prev.map((item, index) => (index === currentRow ? submitWord : item)))
-    setEvaluationList(prev => prev.map((item, index) => (index === currentRow ? resultEvaluationList : item)))
+    setEvaluationList((prev) =>
+      prev.map((item, index) => (index === currentRow ? resultEvaluationList : item)),
+    )
   }
 
   useEffect(() => {
@@ -68,7 +86,13 @@ const Home: FC = () => {
       onBlur={() => handleFocus('blur')}
       className="max-w-125 mx-auto h-full flex flex-col p-4">
       <Borad isFocus={isFocus} keyboardRef={keyboardRef} />
-      <KeyboardWrapper keyboardRef={keyboardRef} handleSubmit={handleSubmit} />
+      <KeyboardWrapper
+        keyboardRef={keyboardRef}
+        wordDataList={wordDataList}
+        boardList={boardList}
+        handleKeyChange={handelKeyChange}
+        handleSubmit={handleSubmit}
+      />
     </div>
   )
 }

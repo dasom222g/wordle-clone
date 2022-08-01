@@ -17,6 +17,11 @@ export const wordDataListState = atom<WordDataListType[]>({
   default: initialWordDataList,
 })
 
+export const currentRowState = atom<number>({
+  key: 'currentRowState',
+  default: 0,
+})
+
 export const boardListState = atom<string[]>({
   key: 'boardListState',
   default: initialBoardList,

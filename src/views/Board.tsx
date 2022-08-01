@@ -14,7 +14,6 @@ const Board: FC<Board> = ({ isFocus, keyboardRef }) => {
   const boardList = useRecoilValue(boardListState)
   const [wordDataList, setWordDataList] = useRecoilState(wordDataListState)
   const [input, setInput] = useRecoilState(inputState)
-  // const [keyboard, setKeyboard] = useRecoilState(keyboardRefState)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let { value } = e.target
