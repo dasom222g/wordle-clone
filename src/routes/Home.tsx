@@ -1,8 +1,14 @@
-import React, { FC, useRef } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { FocusIndicatorType } from '../lib/type'
-import { isFocusState, solutionState, wordDataListState } from '../state/dataState'
+import { EvaluationIndicatorType, FocusIndicatorType } from '../lib/type'
+import {
+  boardListState,
+  evaluationListState,
+  isFocusState,
+  solutionState,
+  wordDataListState,
+} from '../state/dataState'
 import Borad from '../views/Board'
 import KeyboardWrapper from '../views/KeyboardWrapper'
 import { solutionList } from '../lib/utils'
@@ -14,6 +20,9 @@ const Home: FC = () => {
 
   const solution = useRecoilValue(solutionState)
 
+  const [boardList, setBoardList] = useRecoilState(boardListState)
+  const [evaluationList, setEvaluationList] = useRecoilState(evaluationListState)
+
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
   }
@@ -24,15 +33,34 @@ const Home: FC = () => {
 
   const checkCorrect = (currentRow: number): void => {
     const submitWord = wordDataList[currentRow].word
+    const submitWordList = Array.from(submitWord)
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
-      console.error('error')
+      alert('Not in wordList')
       // TODO : animate-wiggle 처리
       return
     }
-    console.log('solution', solution)
+    // 정답 체크
+    const correctCheckList: EvaluationIndicatorType[] = submitWordList.map((word, index) =>
+      word === solution[index] ? 'correct' : null,
+    )
+    const resultEvaluationList: EvaluationIndicatorType[] = correctCheckList.map((check, index) => {
+      return !check
+        ? Array.from(solution).some((word) => word === submitWord[index])
+          ? 'present'
+          : 'absent'
+        : check
+    })
+    setBoardList((prev) => prev.map((item, index) => (index === currentRow ? submitWord : item)))
+    setEvaluationList(prev => prev.map((item, index) => (index === currentRow ? resultEvaluationList : item)))
   }
+
+  useEffect(() => {
+    console.log('boardList', boardList)
+    console.log('wordDataList', wordDataList)
+    console.log('evaluationList', evaluationList)
+  }, [boardList, wordDataList, evaluationList])
 
   return (
     <div
