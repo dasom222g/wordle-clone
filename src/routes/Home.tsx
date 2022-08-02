@@ -113,6 +113,7 @@ const Home: FC = () => {
         isFocus={isFocus}
         keyboardRef={keyboardRef}
         handleInputChange={handelInputChange}
+        handleSubmit={handleSubmit}
       />
       <KeyboardWrapper
         keyboardRef={keyboardRef}

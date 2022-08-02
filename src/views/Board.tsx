@@ -10,9 +10,17 @@ interface Board {
   isFocus: boolean
   keyboardRef: MutableRefObject<KeyboardReactInterface | null>
   handleInputChange: (value: string, resultWordDataList: WordDataListType[]) => void
+  handleSubmit: () => void
 }
 
-const Board: FC<Board> = ({ input, currentIndex, wordDataList, isFocus, handleInputChange }) => {
+const Board: FC<Board> = ({
+  input,
+  currentIndex,
+  wordDataList,
+  isFocus,
+  handleInputChange,
+  handleSubmit,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -33,6 +41,10 @@ const Board: FC<Board> = ({ input, currentIndex, wordDataList, isFocus, handleIn
     handleInputChange(value, resultWordDataList)
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    e.key === 'Enter' && handleSubmit()
+  }
+
   useEffect(() => {
     const { current } = inputRef
     current?.focus()
@@ -47,6 +59,7 @@ const Board: FC<Board> = ({ input, currentIndex, wordDataList, isFocus, handleIn
         maxLength={5}
         value={input}
         onChange={handleChange}
+        onKeyPress={handleKeyPress}
       />
       <div className="w-87.5 mx-auto grid grid-rows-6 gap-2">
         {wordDataList.map((wordData) => (
