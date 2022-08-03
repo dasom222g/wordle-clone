@@ -65,7 +65,6 @@ const Home: FC = () => {
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
-      // TODO : animate-wiggle 처리
       setToastData((data) => ({ ...data, message: 'Not in wordList', isOpen: true }))
       return
     }

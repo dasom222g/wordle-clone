@@ -21,7 +21,7 @@ const Toast: FC<ToastProp> = ({ data }) => {
   return (
     <div>
       <Snackbar
-        autoHideDuration={2000}
+        autoHideDuration={1000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         open={open}
         onClose={handleClose}
