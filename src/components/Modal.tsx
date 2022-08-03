@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -6,22 +6,30 @@ import Button from '@mui/material/Button'
 import ShareIcon from '@mui/icons-material/Share'
 import CloseIcon from '@mui/icons-material/Close'
 import { IconButton } from '@mui/material'
+import { NotiType } from '../lib/type'
 
 interface ModalProp {
-  message: string
-  modalOpen: boolean
+  data: NotiType
   handleModalClose: () => void
 }
 
-const Modal: FC<ModalProp> = ({ message, modalOpen, handleModalClose }) => {
+const Modal: FC<ModalProp> = ({ data, handleModalClose }) => {
+  const { message, isOpen } = data
+  const [open, setOpen] = useState(isOpen)
+
   const handleClose = (): void => {
+    setOpen(false)
     handleModalClose()
+  }
+
+  const handleShare = (): void => {
+    // TODO 복사 기능
   }
 
   return (
     <div>
       <Dialog
-        open={modalOpen}
+        open={open}
         fullWidth={true}
         maxWidth={'sm'}
         onClose={handleClose}
@@ -41,7 +49,7 @@ const Modal: FC<ModalProp> = ({ message, modalOpen, handleModalClose }) => {
           </IconButton>
         </DialogTitle>
         <DialogActions>
-          <Button variant={'contained'} startIcon={<ShareIcon />} onClick={handleClose}>
+          <Button variant={'contained'} startIcon={<ShareIcon />} onClick={handleShare}>
             Share
           </Button>
         </DialogActions>
