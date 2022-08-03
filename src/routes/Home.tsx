@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { EvaluationIndicatorType, FocusIndicatorType, WordDataListType } from '../lib/type'
@@ -7,12 +7,14 @@ import {
   currentRowState,
   inputState,
   isFocusState,
+  modalOpenState,
   solutionState,
   wordDataListState,
 } from '../state/dataState'
 import Borad from '../views/Board'
 import KeyboardWrapper from '../views/KeyboardWrapper'
 import { solutionList } from '../lib/utils'
+import Modal from '../components/Modal'
 
 const Home: FC = () => {
   const keyboardRef = useRef<KeyboardReactInterface | null>(null)
@@ -27,6 +29,10 @@ const Home: FC = () => {
   const solution = useRecoilValue(solutionState)
 
   const [boardList, setBoardList] = useRecoilState(boardListState)
+
+  const [modalOpen, setModalOpen] = useRecoilState(modalOpenState)
+
+  const [isCorrect, setIsCorrect] = useState(false)
 
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
@@ -66,7 +72,10 @@ const Home: FC = () => {
           : wordData.wordList,
       }
     })
-    console.log('resultWordDataList', resultWordDataList)
+    const checkIsCorrect = resultWordDataList[currentRow].wordList.every(
+      (word) => word.evaluation === 'correct',
+    )
+    checkIsCorrect && setIsCorrect(checkIsCorrect)
     setWordDataList(resultWordDataList)
     setBoardList((prev) => prev.map((item, index) => (index === currentRow ? submitWord : item)))
   }
@@ -78,7 +87,6 @@ const Home: FC = () => {
       solutionWordList[targetIndex] === targetWord
         ? 'correct'
         : checkExist(solutionWordList, targetWord)
-    console.log('targetWord', result)
     return result
   }
 
@@ -91,15 +99,26 @@ const Home: FC = () => {
     return result
   }
 
+  const handleModalClose = (): void => {
+    setModalOpen(false)
+  }
+
   useEffect(() => {
     const currentIndex = boardList.findIndex((board) => board === '')
     setCurrentRow(currentIndex)
   }, [boardList, setCurrentRow])
 
   useEffect(() => {
+    // 답 제출시 input 초기화
     setInput('')
     keyboardRef.current?.setInput('')
   }, [currentRow, setInput])
+
+  useEffect(() => {
+    // 최종 정답일 경우
+    if (!isCorrect) return
+    setModalOpen(true)
+  }, [isCorrect, setModalOpen])
 
   return (
     <div
@@ -122,6 +141,7 @@ const Home: FC = () => {
         handleKeyChange={handelKeyChange}
         handleSubmit={handleSubmit}
       />
+      <Modal message={'Bingo!'} modalOpen={modalOpen} handleModalClose={handleModalClose} />
     </div>
   )
 }

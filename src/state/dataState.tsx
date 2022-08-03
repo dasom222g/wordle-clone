@@ -31,3 +31,8 @@ export const solutionState = atom<string>({
   key: 'solutionState',
   default: initialSolution,
 })
+
+export const modalOpenState = atom<boolean>({
+  key: 'modalOpenState',
+  default: false,
+})
