@@ -7,13 +7,15 @@ import ShareIcon from '@mui/icons-material/Share'
 import CloseIcon from '@mui/icons-material/Close'
 import { IconButton } from '@mui/material'
 import { NotiType } from '../lib/type'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 interface ModalProp {
   data: NotiType
+  shareText: string
   handleModalClose: () => void
 }
 
-const Modal: FC<ModalProp> = ({ data, handleModalClose }) => {
+const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose }) => {
   const { message, isOpen } = data
   const [open, setOpen] = useState(isOpen)
 
@@ -22,8 +24,8 @@ const Modal: FC<ModalProp> = ({ data, handleModalClose }) => {
     handleModalClose()
   }
 
-  const handleShare = (): void => {
-    // TODO 복사 기능
+  const handleCopy = (): void => {
+    setOpen(false)
   }
 
   return (
@@ -49,9 +51,14 @@ const Modal: FC<ModalProp> = ({ data, handleModalClose }) => {
           </IconButton>
         </DialogTitle>
         <DialogActions>
-          <Button variant={'contained'} startIcon={<ShareIcon />} onClick={handleShare}>
+          {/* <Button variant={'contained'} startIcon={<ShareIcon onClick={handleShare} />}>
             Share
-          </Button>
+          </Button> */}
+          <CopyToClipboard text={shareText} onCopy={handleCopy}>
+            <Button variant={'contained'} startIcon={<ShareIcon />}>
+              Share
+            </Button>
+          </CopyToClipboard>
         </DialogActions>
       </Dialog>
     </div>

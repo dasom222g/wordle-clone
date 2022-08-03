@@ -12,6 +12,7 @@ import {
   currentRowState,
   inputState,
   isFocusState,
+  shareTextState,
   solutionState,
   wordDataListState,
 } from '../state/dataState'
@@ -35,6 +36,8 @@ const Home: FC = () => {
   const solution = useRecoilValue(solutionState)
 
   const [boardList, setBoardList] = useRecoilState(boardListState)
+
+  const [shareText, setShareText] = useRecoilState(shareTextState)
 
   const [modalData, setModalData] = useState<NotiType>(initialNoti)
 
@@ -111,6 +114,28 @@ const Home: FC = () => {
     setModalData(initialNoti)
   }
 
+  const setCopyText = (): string => {
+    const date = new Date(+new Date() + 3240 * 10000).toISOString().split('T')[0]
+    const time = new Date().toTimeString().split(' ')[0]
+    const evaluationList = wordDataList.map((wordData) =>
+      wordData.wordList.map((word) => word.evaluation),
+    )
+
+    const titleText = `Wordle ${date} ${time} ${currentRow + 1}/${wordDataList.length}`
+    const tileText = evaluationList
+      .map((evaluation) =>
+        evaluation
+          .map((item) =>
+            item ? (item === 'absent' ? '⬜' : item === 'present' ? '🟨' : '🟩') : '',
+          )
+          .join(''),
+      )
+      .filter((text) => text.length)
+      .join('\n')
+
+    return titleText + '\n\n' + tileText
+  }
+
   useEffect(() => {
     const currentIndex = boardList.findIndex((board) => board === '')
     setCurrentRow(currentIndex)
@@ -126,6 +151,8 @@ const Home: FC = () => {
     // 최종 정답일 경우
     if (!isCorrect) return
     setModalData((data) => ({ ...data, message: 'Bingo!', isOpen: true }))
+    setShareText(setCopyText())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCorrect])
 
   return (
@@ -149,7 +176,9 @@ const Home: FC = () => {
         handleKeyChange={handelKeyChange}
         handleSubmit={handleSubmit}
       />
-      {modalData.isOpen && <Modal data={modalData} handleModalClose={handleModalClose} />}
+      {modalData.isOpen && (
+        <Modal data={modalData} handleModalClose={handleModalClose} shareText={shareText} />
+      )}
       <Toast data={toastData} />
     </div>
   )

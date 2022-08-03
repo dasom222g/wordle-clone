@@ -31,3 +31,8 @@ export const solutionState = atom<string>({
   key: 'solutionState',
   default: initialSolution,
 })
+
+export const shareTextState = atom<string>({
+  key: 'shareTextState',
+  default: '',
+})
