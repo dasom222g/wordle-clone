@@ -9,6 +9,7 @@ interface Board {
   wordDataList: WordDataListType[]
   isFocus: boolean
   keyboardRef: MutableRefObject<KeyboardReactInterface | null>
+  disabled: boolean
   handleInputChange: (value: string, resultWordDataList: WordDataListType[]) => void
   handleSubmit: () => void
 }
@@ -18,12 +19,14 @@ const Board: FC<Board> = ({
   currentIndex,
   wordDataList,
   isFocus,
+  disabled,
   handleInputChange,
   handleSubmit,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (disabled) return
     let { value } = e.target
     value = value.toUpperCase()
     const resultWordDataList = wordDataList.map((wordData, index) => {
@@ -42,7 +45,7 @@ const Board: FC<Board> = ({
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    e.key === 'Enter' && handleSubmit()
+    e.key === 'Enter' && !disabled && handleSubmit()
   }
 
   useEffect(() => {

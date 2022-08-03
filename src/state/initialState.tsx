@@ -69,9 +69,9 @@ export const initialWordDataList: WordDataListType[] = [
 
 export const initialBoardList = ['', '', '', '', '', '']
 
-export const initialSolution = 'UPSET'
-
 export const initialNoti: NotiType = {
   message: 'Initial solution',
   isOpen: false,
 }
+
+export const initialSolution = 'UPSET'

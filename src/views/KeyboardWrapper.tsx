@@ -7,6 +7,7 @@ interface KeyboardWrapperProp {
   keyboardRef: MutableRefObject<KeyboardReactInterface | null>
   currentIndex: number
   wordDataList: WordDataListType[]
+  disabled: boolean
   handleKeyChange: (value: string, resultWordDataList: WordDataListType[]) => void
   handleSubmit: () => void
 }
@@ -15,10 +16,12 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
   keyboardRef,
   currentIndex,
   wordDataList,
+  disabled,
   handleKeyChange,
   handleSubmit,
 }) => {
   const handleChange = (value: string): void => {
+    if (disabled) return
     const resultWordDataList: WordDataListType[] = wordDataList.map((wordData, index) => {
       const isCurrentItem = Number(currentIndex) === index
       return {
@@ -34,8 +37,7 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
   }
 
   const handleKeyPress = (value: string): void => {
-    if (value !== '{enter}') return
-    handleSubmit()
+    value === '{enter}' && !disabled && handleSubmit()
   }
 
   return (

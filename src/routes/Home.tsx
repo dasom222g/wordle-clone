@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 import {
   EvaluationIndicatorType,
   FocusIndicatorType,
@@ -20,7 +20,7 @@ import Borad from '../views/Board'
 import KeyboardWrapper from '../views/KeyboardWrapper'
 import { solutionList } from '../lib/utils'
 import Modal from '../components/Modal'
-import { initialNoti } from '../state/initialState'
+import { initialBoardList, initialNoti, initialWordDataList } from '../state/initialState'
 import Toast from '../components/Toast'
 
 const Home: FC = () => {
@@ -33,7 +33,7 @@ const Home: FC = () => {
 
   const [currentRow, setCurrentRow] = useRecoilState(currentRowState)
 
-  const solution = useRecoilValue(solutionState)
+  const [solution, setSolution] = useRecoilState(solutionState)
 
   const [boardList, setBoardList] = useRecoilState(boardListState)
 
@@ -44,6 +44,8 @@ const Home: FC = () => {
   const [toastData, setToastData] = useState<NotiType>(initialNoti)
 
   const [isCorrect, setIsCorrect] = useState(false)
+
+  const [disabled, setDisabled] = useState(false)
 
   const handleFocus = (type: FocusIndicatorType): void => {
     setIsFocus(type === 'focus')
@@ -68,7 +70,11 @@ const Home: FC = () => {
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
-      setToastData((data) => ({ ...data, message: 'Not in wordList', isOpen: true }))
+      const newData = {
+        message: 'Not in wordList',
+        isOpen: true,
+      }
+      setToastData(newData)
       return
     }
     // 정답 체크
@@ -92,7 +98,7 @@ const Home: FC = () => {
 
   const checkCorrect = (targetWord: string, targetIndex: number): EvaluationIndicatorType => {
     // 존재여부 체크
-    const solutionWordList = Array.from(solution)
+    const solutionWordList = Array.from(solution.toUpperCase())
     const result: EvaluationIndicatorType =
       solutionWordList[targetIndex] === targetWord
         ? 'correct'
@@ -109,9 +115,33 @@ const Home: FC = () => {
     return result
   }
 
-  const handleModalClose = (): void => {
+  const initData = (): void => {
+    setWordDataList(initialWordDataList)
+    setBoardList(initialBoardList)
+    setIsCorrect(false)
+  }
+
+  const setRandomSoultion = (): void => {
+    // 정답 랜덤으로 변경하기
+    const num = Math.floor(Math.random() * solutionList.length + 1)
+    const randomSolution = solutionList[num]
+    setSolution(randomSolution)
+    localStorage.setItem('CORRECT', randomSolution)
+    // 데이터 초기화
+    initData()
+  }
+
+  const handleCorrectReply = (): void => {
+    setRandomSoultion()
     // 데이터 초기화
     setModalData(initialNoti)
+    initData()
+  }
+
+  const handleModalClose = (): void => {
+    // modal 데이터 초기화
+    setModalData(initialNoti)
+    setDisabled(true)
   }
 
   const setCopyText = (): string => {
@@ -136,6 +166,8 @@ const Home: FC = () => {
     return titleText + '\n\n' + tileText
   }
 
+  // Life cycle
+
   useEffect(() => {
     const currentIndex = boardList.findIndex((board) => board === '')
     setCurrentRow(currentIndex)
@@ -145,6 +177,12 @@ const Home: FC = () => {
     // 답 제출시 input 초기화
     setInput('')
     keyboardRef.current?.setInput('')
+    // 모든 답 제출시 실행
+    if (currentRow < 0 && !isCorrect) {
+      setModalData((data) => ({ ...data, message: 'End!', isOpen: true }))
+      setShareText(setCopyText())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRow, setInput])
 
   useEffect(() => {
@@ -154,6 +192,11 @@ const Home: FC = () => {
     setShareText(setCopyText())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCorrect])
+
+  useEffect(() => {
+    setRandomSoultion()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div
@@ -166,6 +209,7 @@ const Home: FC = () => {
         wordDataList={wordDataList}
         isFocus={isFocus}
         keyboardRef={keyboardRef}
+        disabled={disabled}
         handleInputChange={handelInputChange}
         handleSubmit={handleSubmit}
       />
@@ -173,11 +217,17 @@ const Home: FC = () => {
         keyboardRef={keyboardRef}
         currentIndex={currentRow}
         wordDataList={wordDataList}
+        disabled={disabled}
         handleKeyChange={handelKeyChange}
         handleSubmit={handleSubmit}
       />
       {modalData.isOpen && (
-        <Modal data={modalData} handleModalClose={handleModalClose} shareText={shareText} />
+        <Modal
+          data={modalData}
+          shareText={shareText}
+          handleModalClose={handleModalClose}
+          handleCorrectReply={handleCorrectReply}
+        />
       )}
       <Toast data={toastData} />
     </div>
