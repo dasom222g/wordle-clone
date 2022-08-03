@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -7,15 +8,16 @@ import ShareIcon from '@mui/icons-material/Share'
 import CloseIcon from '@mui/icons-material/Close'
 import { IconButton } from '@mui/material'
 import { NotiType } from '../lib/type'
-import CopyToClipboard from 'react-copy-to-clipboard'
+import ReplayIcon from '@mui/icons-material/Replay'
 
 interface ModalProp {
   data: NotiType
   shareText: string
   handleModalClose: () => void
+  handleCorrectReply: () => void
 }
 
-const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose }) => {
+const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose, handleCorrectReply }) => {
   const { message, isOpen } = data
   const [open, setOpen] = useState(isOpen)
 
@@ -25,7 +27,12 @@ const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose }) => {
   }
 
   const handleCopy = (): void => {
+    // copy..
+  }
+
+  const handleReply = (): void => {
     setOpen(false)
+    handleCorrectReply()
   }
 
   return (
@@ -51,14 +58,14 @@ const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose }) => {
           </IconButton>
         </DialogTitle>
         <DialogActions>
-          {/* <Button variant={'contained'} startIcon={<ShareIcon onClick={handleShare} />}>
-            Share
-          </Button> */}
           <CopyToClipboard text={shareText} onCopy={handleCopy}>
             <Button variant={'contained'} startIcon={<ShareIcon />}>
               Share
             </Button>
           </CopyToClipboard>
+          <Button variant={'outlined'} startIcon={<ReplayIcon />} onClick={handleReply}>
+            Reply
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
