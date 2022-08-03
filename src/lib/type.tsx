@@ -26,3 +26,8 @@ export interface WordDataListType {
   word: string
   isCurrentItem: boolean
 }
+
+export interface NotiType {
+  message: string
+  isOpen: boolean
+}

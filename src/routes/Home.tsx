@@ -1,13 +1,17 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { KeyboardReactInterface } from 'react-simple-keyboard'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { EvaluationIndicatorType, FocusIndicatorType, WordDataListType } from '../lib/type'
+import {
+  EvaluationIndicatorType,
+  FocusIndicatorType,
+  NotiType,
+  WordDataListType,
+} from '../lib/type'
 import {
   boardListState,
   currentRowState,
   inputState,
   isFocusState,
-  modalOpenState,
   solutionState,
   wordDataListState,
 } from '../state/dataState'
@@ -15,6 +19,8 @@ import Borad from '../views/Board'
 import KeyboardWrapper from '../views/KeyboardWrapper'
 import { solutionList } from '../lib/utils'
 import Modal from '../components/Modal'
+import { initialNoti } from '../state/initialState'
+import Toast from '../components/Toast'
 
 const Home: FC = () => {
   const keyboardRef = useRef<KeyboardReactInterface | null>(null)
@@ -30,7 +36,9 @@ const Home: FC = () => {
 
   const [boardList, setBoardList] = useRecoilState(boardListState)
 
-  const [modalOpen, setModalOpen] = useRecoilState(modalOpenState)
+  const [modalData, setModalData] = useState<NotiType>(initialNoti)
+
+  const [toastData, setToastData] = useState<NotiType>(initialNoti)
 
   const [isCorrect, setIsCorrect] = useState(false)
 
@@ -57,8 +65,8 @@ const Home: FC = () => {
     const isExist = solutionList.some((item) => item.toUpperCase() === submitWord)
     // 허용가능한 단어에 없는경우 에러
     if (!isExist) {
-      alert('Not in wordList')
       // TODO : animate-wiggle 처리
+      setToastData((data) => ({ ...data, message: 'Not in wordList', isOpen: true }))
       return
     }
     // 정답 체크
@@ -100,7 +108,8 @@ const Home: FC = () => {
   }
 
   const handleModalClose = (): void => {
-    setModalOpen(false)
+    // 데이터 초기화
+    setModalData(initialNoti)
   }
 
   useEffect(() => {
@@ -117,8 +126,8 @@ const Home: FC = () => {
   useEffect(() => {
     // 최종 정답일 경우
     if (!isCorrect) return
-    setModalOpen(true)
-  }, [isCorrect, setModalOpen])
+    setModalData((data) => ({ ...data, message: 'Bingo!', isOpen: true }))
+  }, [isCorrect])
 
   return (
     <div
@@ -141,7 +150,8 @@ const Home: FC = () => {
         handleKeyChange={handelKeyChange}
         handleSubmit={handleSubmit}
       />
-      <Modal message={'Bingo!'} modalOpen={modalOpen} handleModalClose={handleModalClose} />
+      {modalData.isOpen && <Modal data={modalData} handleModalClose={handleModalClose} />}
+      <Toast data={toastData} />
     </div>
   )
 }

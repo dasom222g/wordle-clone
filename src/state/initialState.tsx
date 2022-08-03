@@ -1,4 +1,4 @@
-import { WordDataListType, WordListType } from '../lib/type'
+import { NotiType, WordDataListType, WordListType } from '../lib/type'
 
 export const initialWordList: WordListType[] = [
   {
@@ -70,3 +70,8 @@ export const initialWordDataList: WordDataListType[] = [
 export const initialBoardList = ['', '', '', '', '', '']
 
 export const initialSolution = 'UPSET'
+
+export const initialNoti: NotiType = {
+  message: 'Initial solution',
+  isOpen: false,
+}
