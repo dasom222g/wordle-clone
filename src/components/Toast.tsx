@@ -18,10 +18,6 @@ const Toast: FC<ToastProp> = ({ data }) => {
     setOpen(isOpen)
   }, [data, isOpen])
 
-  useEffect(() => {
-    console.log('open', open)
-  }, [open])
-
   return (
     <div>
       <Snackbar

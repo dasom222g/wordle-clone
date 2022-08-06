@@ -36,7 +36,7 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
     handleKeyChange(value, resultWordDataList)
   }
 
-  const handleKeyPress = (value: string): void => {
+  const handleKeyup = (value: string): void => {
     value === '{enter}' && !disabled && handleSubmit()
   }
 
@@ -51,7 +51,7 @@ const KeyboardWrapper: FC<KeyboardWrapperProp> = ({
         }}
         maxLength={5}
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
+        onKeyReleased={handleKeyup}
       />
     </div>
   )
