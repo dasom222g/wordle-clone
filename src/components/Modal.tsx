@@ -27,7 +27,8 @@ const Modal: FC<ModalProp> = ({ data, shareText, handleModalClose, handleCorrect
   }
 
   const handleCopy = (): void => {
-    // copy..
+    console.log('handleCopy')
+    // TODO: 구현하기
   }
 
   const handleReply = (): void => {
