@@ -1,22 +1,26 @@
-import React, { FC, useEffect, useState } from 'react'
-import Snackbar from '@mui/material/Snackbar'
-import { NotiType } from '../lib/type'
+import React, { FC, useEffect, useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import { NotiType } from '../lib/type';
 
 interface ToastProp {
-  data: NotiType
+  data: NotiType;
 }
 
 const Toast: FC<ToastProp> = ({ data }) => {
-  const { message, isOpen } = data
-  const [open, setOpen] = useState(false)
+  const { message, isOpen } = data;
+  const [open, setOpen] = useState(false);
 
   const handleClose = (): void => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   useEffect(() => {
-    setOpen(isOpen)
-  }, [data, isOpen])
+    setOpen(isOpen);
+  }, [data, isOpen]);
+
+  const test = () => {
+    console.log('test');
+  };
 
   return (
     <div>
@@ -28,7 +32,7 @@ const Toast: FC<ToastProp> = ({ data }) => {
         message={message}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Toast
+export default Toast;
