@@ -125,6 +125,7 @@ const Home: FC = () => {
     // 정답 랜덤으로 변경하기
     const num = Math.floor(Math.random() * solutionList.length + 1)
     const randomSolution = solutionList[num]
+    console.log('🚀 ~ setRandomSoultion ~ randomSolution:', randomSolution)
     setSolution(randomSolution)
     localStorage.setItem('CORRECT', randomSolution)
     // 데이터 초기화
